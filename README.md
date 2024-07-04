@@ -25,33 +25,92 @@ Esse repositório contém fluxos de captura e subida de dados no datalake da Bas
 
 ### Procedimentos
 
--   Clonar esse repositório
+-   #### Clonar esse repositório
 
     ```
     git clone https://github.com/basedosdados/pipelines
     ```
+- #### Instalar o WSL 2 - Ubuntu (Apenas Usuarios windows)
+  
+    * Se você usa o windows é essencial Instalar o WSL 2 - Ubuntu
+    * Siga esse [passo a passo](https://learn.microsoft.com/pt-br/windows/wsl/install)
+      
+- #### Comando para instalar dependencias:
 
--   Abrí-lo no seu editor de texto
+```bash
+sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev
+``` 
 
--   No seu ambiente de desenvolvimento, instalar [poetry](https://python-poetry.org/) para gerenciamento de dependências
+  
+* Caso seu sistema não reconheça `R` como um comando interno, instale pacote [`R-base`][r-base]:
 
+```bash
+sudo apt -y install r-base
+```
+- #### Instalar o pyenv 
+
+  É importante instalar o pyenv para garantir que a versão de python é padrão. Escrevemos uma versão resumida mas recomendamos [esse material](https://realpython.com/intro-to-pyenv/) e [esse](https://gist.github.com/luzfcb/ef29561ff81e81e348ab7d6824e14404) para mais informações. 
+    
+    * Comando para instalar o pyenv:
+ 
+      ```bash
+        curl https://pyenv.run | bash
+      ```
+       * **ATENÇÃO: leia atentamente os avisos depois desse comando, existe um passo a passo essencial para que o pyenv funcione**
+    
+    * Comando para ver lista de versões do pyenv:
+ 
+      ```bash
+        pyenv install --list
+      ```
+      
+    * Comando para instalar a versão padrão de desenvolvimento: 
+ 
+      ```bash
+        pyenv install -v 3.10.14
+      ```
+      
+    * Comando para definir essa versão como versão global: 
+
+      ```bash
+        pyenv global 3.10.14
+      ```
+
+- #### Criar o ambiente virtual dentro do repositório
+    
+    * Comando para criar o ambiente:
+        ```bash
+        python -m venv .venv
+        ```     
+    * Comando para ativar o ambiente:
+        ```bash
+        source .venv/bin/activate
+        ```  
+    * Certifique-se que a versão do python está correta com:
+        ```bash
+        python -V
+        ```
+- #### Atualizar o `pip` 
+
+    É muito importante garantir que a versão está atualizada na venv antes de instalar o `poetry`
+    * Comando para atualizar o `pip`: 
+       ```bash
+        python -m pip install --upgrade pip
+        ```
+
+-   #### No seu ambiente de desenvolvimento, instalar [poetry](https://python-poetry.org/) para gerenciamento de dependências
+
+    ```bash
+    pip install poetry
     ```
-    pip3 install poetry
-    ```
 
--   Instalar as dependências para desenvolvimento
+-   #### Instalar as dependências para desenvolvimento
 
-    ```
+    ```bash
     poetry install
     ```
-
--   Instalar os hooks de pré-commit (ver https://pre-commit.com/ para entendimento dos hooks)
-
-    ```
-    pre-commit install
-    ```
-
--   Pronto! Seu ambiente está configurado para desenvolvimento.
+    
+-   **Pronto! Seu ambiente está configurado para desenvolvimento.**
 
 ---
 
@@ -227,3 +286,7 @@ run_local(flow, parameters = {"param": "val"})
     ```
 
 -   (Opcional, mas recomendado) Quando acabar de desenvolver sua pipeline, delete todas as versões da mesma pela UI do Prefect.
+
+  <-- Referecias -->
+
+  [r-base]: https://www.r-project.org/
