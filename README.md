@@ -1,3 +1,13 @@
+<p align="center">
+    <a href="https://basedosdados.org">
+        <img src="https://basedosdados.org/favicon.ico">
+    </a>
+</p>
+
+<p align="center">
+    <em>Universalizando o acesso a dados de qualidade.</em>
+</p>
+
 # Pipelines
 
 Esse repositório contém fluxos de captura e subida de dados no datalake da Base dos Dados.
