@@ -13,6 +13,12 @@
 Esse repositório contém fluxos de captura e subida de dados no datalake da Base dos Dados.
 
 ---
+## Index
+
+- [Configuração de ambiente para desenvolvimento](#configuração-de-ambiente-para-desenvolvimento)
+- [Como testar uma pipeline localmente](#como-testar-uma-pipeline-localmente)
+- [Como testar uma pipeline na nuvem](#como-testar-uma-pipeline-na-nuvem)
+- [Como desenvolver](#como-desenvolver)
 
 ## Configuração de ambiente para desenvolvimento
 
@@ -86,7 +92,7 @@ sudo apt -y install r-base
         ```bash
         source .venv/bin/activate
         ```  
-    * Certifique-se que a versão do python está correta com:
+    * Certifique-se que a versão do python corresponde a `Python 3.10.14` com:
         ```bash
         python -V
         ```
@@ -113,104 +119,39 @@ sudo apt -y install r-base
 -   **Pronto! Seu ambiente está configurado para desenvolvimento.**
 
 ---
+## Como testar uma pipeline localmente
 
-## Como desenvolver
-
-### Estrutura de diretorios
-
-```
-datasets/                    # diretório raiz para o órgão
-|-- projeto1/                # diretório de projeto
-|-- |-- __init__.py          # vazio
-|-- |-- constants.py         # valores constantes para o projeto
-|-- |-- flows.py             # declaração dos flows
-|-- |-- schedules.py         # declaração dos schedules
-|-- |-- tasks.py             # declaração das tasks
-|-- |-- utils.py             # funções auxiliares para o projeto
-...
-|-- __init__.py              # importa todos os flows de todos os projetos
-|-- constants.py             # valores constantes para o órgão
-|-- flows.py                 # declaração de flows genéricos do órgão
-|-- schedules.py             # declaração de schedules genéricos do órgão
-|-- tasks.py                 # declaração de tasks genéricas do órgão
-|-- utils.py                 # funções auxiliares para o órgão
-
-...
-
-utils/
-|-- __init__.py
-|-- flow1/
-|-- |-- __init__.py
-|-- |-- flows.py
-|-- |-- tasks.py
-|-- |-- utils.py
-|-- flows.py                 # declaração de flows genéricos
-|-- tasks.py                 # declaração de tasks genéricas
-|-- utils.py                 # funções auxiliares
-
-constants.py                 # valores constantes para todos os órgãos
-
-```
-
-### Adicionando órgãos e projetos
-
-O script `manage.py` é responsável por criar e listar projetos desse repositório. Para usá-lo, no entanto, você deve instalar as dependências:
-
-```
-poetry install --with=dev
-```
-
-Você pode obter mais informações sobre os comandos com
-
-```
-python manage.py --help
-```
-
-O comando `add-agency` permite que você adicione um novo órgão a partir do template padrão. Para fazê-lo, basta executar
-
-```
-python manage.py add-agency nome-do-orgao
-```
-
-Isso irá criar um novo diretório com o nome `nome-do-orgao` em `pipelines/` com o template padrão, já adaptado ao nome do órgão. O nome do órgão deve estar em [snake case](https://en.wikipedia.org/wiki/Snake_case) e deve ser único. Qualquer conflito com um projeto já existente será reportado.
-
-Para listar os órgão existentes e nomes reservados, basta fazer
-
-```
-python manage.py list-projects
-```
-
-Em seguida, leia com anteção os comentários em cada um dos arquivos do seu projeto, de modo a evitar conflitos e erros.
-Links para a documentação do Prefect também encontram-se nos comentários.
-
-Caso o órgão para o qual você desenvolverá um projeto já exista, basta fazer
-
-```
-python manage.py add-project datasets nome-do-projeto
-```
-
-Onde `nome-projeto`
-
-### Adicionando dependências para execução
-
--   Requisitos de pipelines devem ser adicionados com
-
-```
-poetry add <package>
-```
-
-### Como testar uma pipeline localmente
-
-Escolha a pipeline que deseja executar (exemplo `pipelines.rj_escritorio.test_pipeline.flows.flow`)
+Crie o arquivo `test.py` e adicione as linhas abaixo:
 
 ```py
-from pipelines.utils.utils import run_local
-from pipelines.datasets.test_pipeline.flows import flow
+from pipelines.utils.utils import run_local, run_cloud
+from pipelines.datasets.test_pipeline.flows import test_flow
 
-run_local(flow, parameters = {"param": "val"})
+run_local(flow=test_flow, parameters = {
+        "dataset_id": "test1",
+        "table_id": "test1",
+        })
+```
+Execute o script `test.py` com:
+
+```bash
+python test.py
 ```
 
-### Como testar uma pipeline na nuvem
+Caso suas configuraçoes estiverem corretas. Você recebera um resultado semelhante as linhas abaixo:
+
+```bash
+[2024-07-04 05:26:05+0000] INFO - prefect.TaskRunner | Task 'dataframe_to_csv': Finished task run for task with final state: 'Success'
+[2024-07-04 05:26:05+0000] INFO - prefect.TaskRunner | Task 'table_id': Starting task run...
+[2024-07-04 05:26:05+0000] INFO - prefect.TaskRunner | Task 'table_id': Finished task run for task with final state: 'Success'
+[2024-07-04 05:26:05+0000] INFO - prefect.TaskRunner | Task 'upload': Starting task run...
+[2024-07-04 05:26:05+0000] INFO - prefect.TaskRunner | Task 'upload': Finished task run for task with final state: 'Success'
+[2024-07-04 05:26:05+0000] INFO - prefect.TaskRunner | Task 'upload_to_gcs': Starting task run...
+[2024-07-04 05:26:05+0000] INFO - prefect.TaskRunner | Task 'upload_to_gcs': Finished task run for task with final state: 'Success'
+[2024-07-04 05:26:05+0000] INFO - prefect.FlowRunner | Flow run SUCCESS: all reference tasks succeeded
+```
+
+## Como testar uma pipeline na nuvem
 
 1. Faça a cópia do arquivo `.env.example` para um novo arquivo nomeado `.env`:
 
@@ -284,9 +225,95 @@ run_local(flow, parameters = {"param": "val"})
     Run submitted, please check it at:
     https://prefect.basedosdados.org/flow-run/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
     ```
+# Como desenvolver
+
+## Estrutura de diretorios
+
+```
+datasets/                    # diretório raiz para o órgão
+|-- projeto1/                # diretório de projeto
+|-- |-- __init__.py          # vazio
+|-- |-- constants.py         # valores constantes para o projeto
+|-- |-- flows.py             # declaração dos flows
+|-- |-- schedules.py         # declaração dos schedules
+|-- |-- tasks.py             # declaração das tasks
+|-- |-- utils.py             # funções auxiliares para o projeto
+...
+|-- __init__.py              # importa todos os flows de todos os projetos
+|-- constants.py             # valores constantes para o órgão
+|-- flows.py                 # declaração de flows genéricos do órgão
+|-- schedules.py             # declaração de schedules genéricos do órgão
+|-- tasks.py                 # declaração de tasks genéricas do órgão
+|-- utils.py                 # funções auxiliares para o órgão
+
+...
+
+utils/
+|-- __init__.py
+|-- flow1/
+|-- |-- __init__.py
+|-- |-- flows.py
+|-- |-- tasks.py
+|-- |-- utils.py
+|-- flows.py                 # declaração de flows genéricos
+|-- tasks.py                 # declaração de tasks genéricas
+|-- utils.py                 # funções auxiliares
+
+constants.py                 # valores constantes para todos os órgãos
+
+```
+
+## Adicionando órgãos e projetos
+
+O script `manage.py` é responsável por criar e listar projetos desse repositório. Para usá-lo, no entanto, você deve instalar as dependências:
+
+```
+poetry install --with=dev
+```
+
+Você pode obter mais informações sobre os comandos com
+
+```
+python manage.py --help
+```
+
+O comando `add-agency` permite que você adicione um novo órgão a partir do template padrão. Para fazê-lo, basta executar
+
+```
+python manage.py add-agency nome-do-orgao
+```
+
+Isso irá criar um novo diretório com o nome `nome-do-orgao` em `pipelines/` com o template padrão, já adaptado ao nome do órgão. O nome do órgão deve estar em [snake case](https://en.wikipedia.org/wiki/Snake_case) e deve ser único. Qualquer conflito com um projeto já existente será reportado.
+
+Para listar os órgão existentes e nomes reservados, basta fazer
+
+```
+python manage.py list-projects
+```
+
+Em seguida, leia com anteção os comentários em cada um dos arquivos do seu projeto, de modo a evitar conflitos e erros.
+Links para a documentação do Prefect também encontram-se nos comentários.
+
+Caso o órgão para o qual você desenvolverá um projeto já exista, basta fazer
+
+```
+python manage.py add-project datasets nome-do-projeto
+```
+
+Onde `nome-projeto`
+
+## Adicionando dependências para execução
+
+-   Requisitos de pipelines devem ser adicionados com
+
+```
+poetry add <package>
+```
+
+
 
 -   (Opcional, mas recomendado) Quando acabar de desenvolver sua pipeline, delete todas as versões da mesma pela UI do Prefect.
 
-  <-- Referecias -->
+  <!-- Referecias -->
 
   [r-base]: https://www.r-project.org/
