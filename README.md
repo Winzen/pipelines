@@ -40,7 +40,13 @@ Esse repositório contém fluxos de captura e subida de dados no datalake da Bas
   
     * Se você usa o windows é essencial Instalar o WSL 2 - Ubuntu
     * Siga esse [passo a passo](https://learn.microsoft.com/pt-br/windows/wsl/install)
-      
+    * Pacotes de atualização e upgrade.
+      Para Ubuntu ou Debian, use o comando :
+
+      ```bash
+      sudo apt update && sudo apt upgrade
+      ```
+
 - #### Comando para instalar dependencias:
 
 ```bash
