@@ -26,14 +26,10 @@ jobs:
   build-container:
     if: startsWith(github.head_ref, 'staging/')
     name: Register flows (staging)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Ubuntu
-        uses: actions/setup-ubuntu@v2
-        with:
-          ubuntu-version: '22.04.5'
       - name: Set up poetry
         run: pipx install poetry
       - name: Set up python
