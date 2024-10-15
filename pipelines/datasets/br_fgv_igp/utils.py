@@ -17,6 +17,7 @@ class IGPData:
     """Class for IGP pipeline"""
 
     def __init__(self, ipeacode, period):
+        self.test = 0
         self.fgv_indexes = FGV_INDEX.get(ipeacode)
         self.period = period
         self.main_index = self.fgv_indexes[0]

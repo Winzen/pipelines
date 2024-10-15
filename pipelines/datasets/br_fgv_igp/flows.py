@@ -310,7 +310,7 @@ with Flow(
     name="IGP-M anual",
     code_owners=[],
 ) as fgv_igpm_ano_flow:
-    # Parameters
+    # Paramete
     INDICE = Parameter("indice", default="IGPM", required=False)
     PERIODO = Parameter("periodo", default="ano", required=False)
     dataset_id = Parameter("dataset_id", default="br_fgv_igp")
