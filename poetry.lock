@@ -5571,4 +5571,4 @@ heapdict = "*"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "379194fd65dbef64e57ce85f90abbfb7da9ea2fcfe2f9e065f7cf34bce0fc9e9"
+content-hash = "4878140cdf84491c1c9466554023ac8d67674d08f045d31d017772bac483108b"

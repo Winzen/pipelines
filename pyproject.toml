@@ -56,7 +56,6 @@ oauth2client = "^4.1.3"
 oauthlib = "3.1.1"
 openpyxl = "3.0.9"
 packaging = "21.3"
-pandas = "^2.0.1"
 pandas-gbq = "^0.19.2"
 partd = "1.2.0"
 proto-plus = "1.22.3"
@@ -136,6 +135,7 @@ typer = "^0.4.0"
 cookiecutter = "^1.7.3"
 networkx = "2.6.3"
 prefect = "0.15.9"
+pandas = "^2.0.1"
 
 [tool.poetry.group.test]
 optional = true
