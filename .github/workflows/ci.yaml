@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          poetry install --with=test
+          poetry install --with dev,test --without default
       - name: Check if `prefect build` works
         run: |
           poetry run prefect build
