@@ -73,6 +73,7 @@ def download_and_unzip(url, extract_to):
         list: unziped files in a given folder
     """
 
+    test = 0 
     os.system(f"mkdir -p {extract_to}")
 
     http_response = urlopen(url)
